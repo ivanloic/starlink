@@ -28,7 +28,6 @@ import {
   ArrowLeft,
   Lock,
   Phone,
-  X,
   Pencil,
   Clipboard,
 } from "lucide-react";
@@ -937,7 +936,7 @@ function ErrorScreen({ operator, onDone, onContactWhatsApp }) {
         className="flex items-center justify-center w-16 h-16 rounded-full animate-[fadeSlideUp_0.5s_ease_both]"
         style={{ backgroundColor: `${operator.color}22`, color: operator.color }}
       >
-        <X size={30} strokeWidth={2.5} />
+        
       </span>
       <div>
         <p className="font-display text-lg font-bold text-[#EAF0FB]">
