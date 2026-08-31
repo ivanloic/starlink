@@ -28,7 +28,6 @@ import {
   ArrowLeft,
   Lock,
   Phone,
-  X,
   Pencil,
   Clipboard,
 } from "lucide-react";
