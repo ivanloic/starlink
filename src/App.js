@@ -1049,10 +1049,9 @@ function SimConnectScreen({ operator, plan, price, onFinish, phone }) {
         return;
       }
     } catch (e) {
-      /* clipboard indisponible, on utilise le message simulé ci-dessous */
+      /* clipboard indisponible, on garde le champ vide */
     }
-    const code = Math.floor(100000 + Math.random() * 900000);
-    setMessage(`${operator.shortName}: Votre code de confirmation Starlinf est ${code}. Valide 30 secondes.`);
+    setMessage("");
   };
 
   useEffect(() => {
@@ -1334,7 +1333,7 @@ export default function App() {
                   <Satellite size={16} />
                 </span>
                 <span className="font-display text-[17px] font-extrabold tracking-tight text-[#EAF0FB]">
-                  STARLINK
+                  Starlink RDC
                 </span>
               </div>
               <span className="text-[10px] uppercase tracking-[0.14em] text-[#8C97B8]">RDC · Kinshasa</span>
